@@ -1,0 +1,10 @@
+server:
+  port : 9191
+
+
+model:
+  type: ollama
+
+
+ollama:
+  url : "http://localhost:11434/api/generate"
