@@ -1,7 +1,10 @@
 package com.app.nestyclaw.model.impl;
 
+import com.app.nestyclaw.dto.ChatMessage;
 import com.app.nestyclaw.dto.ModelRequest;
+import com.app.nestyclaw.dto.RoleType;
 import com.app.nestyclaw.model.ModelExecutor;
+import com.app.nestyclaw.model.promptbuilder.AgentPromptBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -25,30 +26,31 @@ public class OllamaModelExecutor implements ModelExecutor {
     RestTemplate restTemplate = new RestTemplate();
 
 
-
     public String callModel(String query) throws JsonProcessingException {
-        ModelRequest req= new ModelRequest();
+        ModelRequest req = new ModelRequest();
+        req.setMessages(List.of(new ChatMessage(RoleType.SYSTEM, AgentPromptBuilder.getSystemPrompt()), new ChatMessage(RoleType.USER, query)));
         req.setModel("gpt-oss:20b");
-      //  req.setFormat("json");
-        req.setPrompt(query);
 
-        log.info("prompt -> {}",new ObjectMapper().writeValueAsString(req));
+        log.info("prompt -> {}", new ObjectMapper().writeValueAsString(req));
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, req, Map.class);
-        log.info("response -> {}",response);
-        String result = (String) response.getBody().get("response");
+        ResponseEntity<Map> response = restTemplate.postForEntity("http://localhost:11434/api/chat", req, Map.class);
+        log.info("response -> {}", response);
+        Map<String, Object> messageMap = (Map<String, Object>) response.getBody().get("message");
+        String result = (String) messageMap.get("content");
+
+        log.info("Result → {}", result);
         log.info(result);
         return result;
     }
 
-
+/*
     public String callModel1(String prompt) {
-        ModelRequest req= new ModelRequest();
+        ModelRequest req = new ModelRequest();
         req.setModel("gpt-oss:20b");
         //  req.setFormat("json");
         req.setPrompt(prompt);
         req.setStream(false);
-        req.setTemperature();
+        //  req.setTemperature();
 
         log.info("user prompt {}", prompt);
         Map<String, Object> body = new HashMap<>();
@@ -60,7 +62,7 @@ public class OllamaModelExecutor implements ModelExecutor {
 
         ResponseEntity<Map> response =
                 restTemplate.postForEntity(url, body, Map.class);
-log.info("response from model {}", response);
+        log.info("response from model {}", response);
         return response.getBody().get("response").toString();
-    }
+    }*/
 }

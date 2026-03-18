@@ -10,6 +10,5 @@ public class ModelResponse {
 
     private ResponseType type;
     private String content;
-    private String command;
-
+    String description;
 }

@@ -7,4 +7,4 @@ model:
 
 
 ollama:
-  url : "http://localhost:11434/api/generate"
+  url : "http://localhost:11434/api/chat"
