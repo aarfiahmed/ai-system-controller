@@ -18,17 +18,15 @@ public class ModelService {
     private final ModelExecutor modelExecutor;
     private final ObjectMapper objectMapper;
     private final ModelResponseValidator validator;
-
-
+    private final ModelResponseSanitizer modelResponseSanitizer;
 
     @Autowired
     public ModelService(ModelFactory modelFactory, ModelResponseValidator modelResponseValidator, ModelResponseSanitizer modelResponseSanitizer) {
-        modelExecutor = modelFactory.getModel();
+        this.modelExecutor = modelFactory.getModel();
         this.objectMapper = new ObjectMapper();
-        this.validator= modelResponseValidator;
-        this.modelResponseSanitizer= modelResponseSanitizer;
+        this.validator = modelResponseValidator;
+        this.modelResponseSanitizer = modelResponseSanitizer;
     }
-
 
     public String processClientMessage(UserRequestDto clientMessage) throws Exception {
         String result = modelExecutor.callModel(clientMessage.getMessage());
@@ -40,6 +38,4 @@ public class ModelService {
         log.info("model response {}", result);
         return result;
     }
-
-
 }
