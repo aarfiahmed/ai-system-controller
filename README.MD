@@ -54,7 +54,7 @@ ollama serve
 ### Step 2 — Clone & Build the Project
 
 ```bash
-git clone https://github.com/your-username/ai-system-controller.git
+git clone https://github.com/aarfiahmed/ai-system-controller.git
 cd ai-system-controller
 mvn clean install
 ```
